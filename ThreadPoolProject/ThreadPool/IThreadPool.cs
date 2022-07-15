@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace ConsoleApp1.ThreadPool;
+﻿namespace ThreadPoolProject.ThreadPool;
 
 public abstract class IThreadPool<T>
 {
@@ -13,11 +11,13 @@ public abstract class IThreadPool<T>
     // 存活时间
     protected int? KeepAliveTime;
     
-    // 任务队列，初始化
+    // 任务队列
     protected Queue<T> WorkQueue;
     
+    // 线程列表
     protected List<Thread>? Workers;
     
+    // 线程启动器
     protected IThreadStarter ThreadStarter;
     
     // 线程池初始化

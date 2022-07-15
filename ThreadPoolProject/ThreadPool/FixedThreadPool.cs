@@ -1,18 +1,22 @@
 ﻿using System.Collections.Concurrent;
-using System.Dynamic;
 
-namespace ConsoleApp1.ThreadPool;
+namespace ThreadPoolProject.ThreadPool;
 
 public class FixedThreadPool : IThreadPool<Action>
 {
+    // 任务队列锁
     private readonly object _lockerQ = new object();
+    
+    // 丢弃任务关机锁
     private readonly object _lockShutdownNow = new object();
+    
+    // 完成任务后关机锁
     private readonly object _lockShutdown = new object();
 
     private bool _isShutdown;
     private bool _isShutdownNow;
 
-    // 阻塞队列
+    // 阻塞信号集合
     private readonly BlockingCollection<AutoResetEvent> _eventQueue = new();
 
     public static FixedThreadPool Create(int corePoolSize)
@@ -34,6 +38,7 @@ public class FixedThreadPool : IThreadPool<Action>
         {
             // 重置信号 通知我已经空闲了
             _eventQueue.Add(eEvent);
+            
             // 等待执行信号
             Console.WriteLine($"{DateTime.Now} 线程 ThreadId:{Thread.CurrentThread.ManagedThreadId} 开始等待任务执行信号...");
             eEvent.WaitOne();
